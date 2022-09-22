@@ -3,8 +3,8 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { createAction } from '@ngrx/store';
 import { catchError, forkJoin, of, switchMap } from 'rxjs';
 
-import { TweetsService } from '../services/tweets.service';
-import { UsersService } from '../services/users.service';
+import { TweetsService } from '../../services/tweets.service';
+import { UsersService } from '../../services/users.service';
 import { setAuthedUser } from './authedUser';
 import { TweetsActions } from './tweets';
 import { UsersActions } from './users';

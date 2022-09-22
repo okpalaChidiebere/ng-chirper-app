@@ -1,6 +1,6 @@
 import { createActionGroup } from '@ngrx/store';
 
-import { User } from '../utils/_DATA';
+import { User } from '../../utils/_DATA';
 
 export const UsersActions = createActionGroup({
   source: 'Users',

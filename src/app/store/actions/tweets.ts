@@ -1,6 +1,6 @@
 import { createActionGroup } from '@ngrx/store';
 
-import { Tweet, _getTweets } from '../utils/_DATA';
+import { Tweet, _getTweets } from '../../utils/_DATA';
 
 export const TweetsActions = createActionGroup({
   source: 'Tweets',

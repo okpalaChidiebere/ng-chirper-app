@@ -1,7 +1,13 @@
-import { createFeatureSelector, createReducer, on } from '@ngrx/store';
+import {
+  createFeatureSelector,
+  createReducer,
+  createSelector,
+  on,
+} from '@ngrx/store';
 
 import { TweetsActions } from '../actions/tweets';
 import { Tweet } from '../../utils/_DATA';
+import { AppState } from '.';
 
 export const TWEETS_FEATURE_KEY = 'tweets';
 export const getTweetsState = createFeatureSelector(TWEETS_FEATURE_KEY);
@@ -14,4 +20,14 @@ export const tweetsReducer = createReducer(
     ...state,
     ...action.tweets,
   }))
+);
+
+export const selectTweets = (state: AppState) => state.tweets;
+
+export const selectTweetIds = createSelector(
+  selectTweets,
+  (tweets: TweetsState) =>
+    Object.keys(tweets).sort(
+      (a, b) => Number(tweets[b].timestamp) - Number(tweets[a].timestamp)
+    )
 );

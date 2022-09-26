@@ -1,1 +1,6 @@
+<mat-progress-bar
+  mode="query"
+  color="accent"
+  *ngIf="(loadingBar$ | async) === true"
+></mat-progress-bar>
 <div *ngIf="(loading$ | async) === false"><app-dashboard></app-dashboard></div>

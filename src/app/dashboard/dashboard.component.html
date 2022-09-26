@@ -1,8 +1,8 @@
 <div>
-  <h3 className="center">Your Timeline</h3>
-  <ul className="dashboard-list">
+  <h3 class="center">Your Timeline</h3>
+  <ul class="dashboard-list">
     <li *ngFor="let id of tweetIds$ | async">
-      <div>TWEET ID: {{ id }}</div>
+      <app-tweet [id]="id"></app-tweet>
     </li>
   </ul>
 </div>

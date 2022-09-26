@@ -5,20 +5,20 @@ We have users with a buch of tweets
 */
 
 export type Tweet = {
-  author: String;
-  id: String;
-  likes: String[];
-  replies: String[];
-  text: String;
-  timestamp: Number;
-  replyingTo: String | null;
+  author: string;
+  id: string;
+  likes: string[];
+  replies: string[];
+  text: string;
+  timestamp: number;
+  replyingTo: string | null;
 };
 
 export type User = {
-  id: String;
-  name: String;
-  avatarURL: String;
-  tweets: String[];
+  id: string;
+  name: string;
+  avatarURL: string;
+  tweets: string[];
 };
 
 let users: Record<string, User> = {

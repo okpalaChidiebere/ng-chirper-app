@@ -1,9 +1,11 @@
+import { Tweet, User } from './_DATA';
+
 export type FormatedTweet = {
-  name: String;
-  id: String;
-  timestamp: String;
-  text: String;
-  avatar: String;
+  name: string;
+  id: string;
+  timestamp: number;
+  text: string;
+  avatar: string;
   likes: Number;
   replies: Number;
   hasLiked: Boolean;
@@ -13,19 +15,12 @@ export type FormatedTweet = {
   };
 };
 
-//takes in a timestamp formats it and returns formatted timestamp
-export function formatDate(timestamp) {
-  const d = new Date(timestamp);
-  const time = d.toLocaleTimeString('en-US');
-  return time.substr(0, 5) + time.slice(-2) + ' | ' + d.toLocaleDateString();
-}
-
 //takes in an information about a new tweet and formats it in a way that suits our Redux store
 export function formatTweet(
-  tweet,
-  author,
-  authedUser,
-  parentTweet
+  tweet: Tweet,
+  author: User,
+  authedUser: string,
+  parentTweet: Tweet | null
 ): FormatedTweet {
   const { id, likes, replies, text, timestamp } = tweet;
   const { name, avatarURL } = author;

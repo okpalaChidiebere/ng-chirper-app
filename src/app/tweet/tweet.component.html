@@ -1,0 +1,44 @@
+<ng-container *ngIf="tweet$ | async as tweet">
+  <P *ngIf="tweet === null; else elseBlock">This Tweet doesn't exist</P>
+  <ng-template #elseBlock>
+    <div class="tweet">
+      <img
+        [src]="tweet.avatar"
+        [alt]="'Avatar of ' + tweet.name"
+        class="avatar"
+      />
+      <div class="tweet-info">
+        <div>
+          <span>{{ tweet.name }}</span>
+          <div>{{ tweet.timestamp | date: "h:mm a | dd/MM/yyyy" }}</div>
+          <button
+            *ngIf="tweet.parent"
+            class="replying-to"
+            (click)="toParent(tweet.parent.id)"
+          >
+            Replying to @{{ tweet.parent.author }}
+          </button>
+          <p>{{ tweet.text }}</p>
+        </div>
+        <div class="tweet-icons">
+          <mat-icon fontSet="material-icons">reply_outlined</mat-icon>
+          <span *ngIf="tweet.replies">{{ tweet.replies }}</span>
+          <button class="heart-button" (click)="handleLike()">
+            <mat-icon
+              *ngIf="tweet.hasLiked === true; else notLiked"
+              fontSet="material-icons"
+              style="color: #e0245e"
+              >favorite</mat-icon
+            >
+            <ng-template #notLiked>
+              <mat-icon fontSet="material-icons"
+                >favorite_border_outlined</mat-icon
+              >
+            </ng-template>
+          </button>
+          <span *ngIf="tweet.likes !== 0">{{ tweet.likes }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-container>

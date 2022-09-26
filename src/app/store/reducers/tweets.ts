@@ -19,6 +19,17 @@ export const tweetsReducer = createReducer(
   on(TweetsActions.receiveTweets, (state, action) => ({
     ...state,
     ...action.tweets,
+  })),
+  on(TweetsActions.toggleTweet, (state, action) => ({
+    ...state, //spread of all of the previous tweets
+    [action.id]: {
+      ...state[action.id],
+      //we remove or add the username based on of the logged in user has liked the tweet or not
+      likes:
+        action.hasLiked === true
+          ? state[action.id].likes.filter((uid) => uid !== action.authedUser)
+          : state[action.id].likes.concat([action.authedUser]),
+    },
   }))
 );
 

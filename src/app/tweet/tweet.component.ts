@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
 import { Store } from '@ngrx/store';
 
+import { TweetsActions } from '../store/actions/tweets';
 import { AppState } from '../store/reducers';
 import { AuthedUserState } from '../store/reducers/authedUser';
 import { FormatedTweet, formatTweet } from '../utils/helpers';
@@ -56,7 +57,7 @@ export class TweetComponent implements OnInit {
     console.log(tweetId);
   }
 
-  handleLike() {
-    // todo: Handle Like Tweet
+  handleLike(info: Pick<FormatedTweet, 'hasLiked' | 'id'>) {
+    this.store.dispatch(TweetsActions.handleToggleTweet(info));
   }
 }

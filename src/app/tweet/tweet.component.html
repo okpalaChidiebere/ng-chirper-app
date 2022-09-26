@@ -23,7 +23,10 @@
         <div class="tweet-icons">
           <mat-icon fontSet="material-icons">reply_outlined</mat-icon>
           <span *ngIf="tweet.replies">{{ tweet.replies }}</span>
-          <button class="heart-button" (click)="handleLike()">
+          <button
+            class="heart-button"
+            (click)="handleLike({ id: tweet.id, hasLiked: tweet.hasLiked })"
+          >
             <mat-icon
               *ngIf="tweet.hasLiked === true; else notLiked"
               fontSet="material-icons"

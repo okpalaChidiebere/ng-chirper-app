@@ -3,6 +3,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
 import { SharedEffects } from './actions/shared';
+import { TweetsEffects } from './actions/tweets';
 import metaReducers from './middleware';
 import { CombineReducers } from './reducers';
 
@@ -10,7 +11,7 @@ import { CombineReducers } from './reducers';
   declarations: [],
   imports: [
     StoreModule.forRoot({}, { metaReducers }),
-    EffectsModule.forRoot([SharedEffects]),
+    EffectsModule.forRoot([SharedEffects, TweetsEffects]),
     CombineReducers,
   ],
 })

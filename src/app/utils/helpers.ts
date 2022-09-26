@@ -6,9 +6,9 @@ export type FormatedTweet = {
   timestamp: number;
   text: string;
   avatar: string;
-  likes: Number;
-  replies: Number;
-  hasLiked: Boolean;
+  likes: number;
+  replies: number;
+  hasLiked: boolean;
   parent: null | {
     author: string;
     id: string;

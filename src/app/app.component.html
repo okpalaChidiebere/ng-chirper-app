@@ -1,8 +1,13 @@
-<mat-progress-bar
-  mode="query"
-  color="accent"
-  *ngIf="(loadingBar$ | async) === true"
-></mat-progress-bar>
-<div *ngIf="(loading$ | async) === false">
-  <app-tweet-page></app-tweet-page>
-</div>
+<ng-container>
+  <mat-progress-bar
+    mode="query"
+    color="accent"
+    *ngIf="(loadingBar$ | async) === true"
+  ></mat-progress-bar>
+  <div class="container">
+    <app-nav></app-nav>
+    <div *ngIf="(loading$ | async) === false">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</ng-container>

@@ -1,7 +1,7 @@
 <ng-container *ngIf="tweet$ | async as tweet">
   <P *ngIf="tweet === null; else elseBlock">This Tweet doesn't exist</P>
   <ng-template #elseBlock>
-    <div class="tweet">
+    <a [routerLink]="['/tweet', tweet.id]" class="tweet">
       <img
         [src]="tweet.avatar"
         [alt]="'Avatar of ' + tweet.name"
@@ -14,7 +14,7 @@
           <button
             *ngIf="tweet.parent"
             class="replying-to"
-            (click)="toParent(tweet.parent.id)"
+            (click)="toParent($event, tweet.parent.id)"
           >
             Replying to @{{ tweet.parent.author }}
           </button>
@@ -25,7 +25,9 @@
           <span *ngIf="tweet.replies">{{ tweet.replies }}</span>
           <button
             class="heart-button"
-            (click)="handleLike({ id: tweet.id, hasLiked: tweet.hasLiked })"
+            (click)="
+              handleLike($event, { id: tweet.id, hasLiked: tweet.hasLiked })
+            "
           >
             <mat-icon
               *ngIf="tweet.hasLiked === true; else notLiked"
@@ -42,6 +44,6 @@
           <span *ngIf="tweet.likes !== 0">{{ tweet.likes }}</span>
         </div>
       </div>
-    </div>
+    </a>
   </ng-template>
 </ng-container>

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -9,8 +10,9 @@ import { AppStore } from './store';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TweetComponent } from './tweet/tweet.component';
 import { NewTweetComponent } from './new-tweet/new-tweet.component';
-import { ReactiveFormsModule } from '@angular/forms';
 import { TweetPageComponent } from './tweet-page/tweet-page.component';
+import { AppRoutingModule } from './app-routing.module';
+import { NavComponent } from './nav/nav.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +21,7 @@ import { TweetPageComponent } from './tweet-page/tweet-page.component';
     TweetComponent,
     NewTweetComponent,
     TweetPageComponent,
+    NavComponent,
   ],
   imports: [
     BrowserModule,
@@ -27,6 +30,7 @@ import { TweetPageComponent } from './tweet-page/tweet-page.component';
     BrowserAnimationsModule,
     MatProgressBarModule,
     ReactiveFormsModule,
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

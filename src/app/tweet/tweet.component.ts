@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ComponentStore } from '@ngrx/component-store';
 import { Store } from '@ngrx/store';
 
@@ -23,7 +24,8 @@ export class TweetComponent implements OnInit {
 
   constructor(
     private readonly componentStore: ComponentStore<TweetState>,
-    private readonly store: Store<AppState>
+    private readonly store: Store<AppState>,
+    private router: Router
   ) {
     this.componentStore.setState({
       authedUser: null,
@@ -53,11 +55,18 @@ export class TweetComponent implements OnInit {
     });
   }
 
-  toParent(tweetId: string) {
-    console.log(tweetId);
+  toParent(e, tweetId: string) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    //take the user to the tweet that they are replying to
+    this.router.navigate(['/tweet', tweetId]); //declarative way of navigating to a page
   }
 
-  handleLike(info: Pick<FormatedTweet, 'hasLiked' | 'id'>) {
+  handleLike(e, info: Pick<FormatedTweet, 'hasLiked' | 'id'>) {
+    e.stopPropagation();
+    e.preventDefault();
+
     this.store.dispatch(TweetsActions.handleToggleTweet(info));
   }
 }

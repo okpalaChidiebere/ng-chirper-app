@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
+
 import { AppState } from '../store/reducers';
 
 @Component({
@@ -8,11 +10,16 @@ import { AppState } from '../store/reducers';
   styleUrls: ['./tweet-page.component.css'],
 })
 export class TweetPageComponent implements OnInit {
-  id = '8xf0y6ziyjabvozdd253nd'; //this will be later coming in from angular router
+  id: string | null;
   replies: string[] = [];
-  constructor(private readonly store: Store<AppState>) {}
+  constructor(
+    private readonly store: Store<AppState>,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
+    this.id = this.route.snapshot.paramMap.get('id'); //initialize the id first
+
     this.store.subscribe(({ tweets }) => {
       this.replies = !tweets[this.id]
         ? []

@@ -30,7 +30,27 @@ export const tweetsReducer = createReducer(
           ? state[action.id].likes.filter((uid) => uid !== action.authedUser)
           : state[action.id].likes.concat([action.authedUser]),
     },
-  }))
+  })),
+  on(TweetsActions.addTweet, (state, action) => {
+    const { tweet } = action;
+
+    let replyingTo = {};
+    //handle case where we are replying to a tweet
+    if (tweet.replyingTo !== null) {
+      replyingTo = {
+        [tweet.replyingTo]: {
+          ...state[tweet.replyingTo],
+          replies: state[tweet.replyingTo].replies.concat([tweet.id]),
+        },
+      };
+    }
+
+    return {
+      ...state,
+      [action.tweet.id]: action.tweet, //add the new tweet to our array of tweets
+      ...replyingTo,
+    };
+  })
 );
 
 export const selectTweets = (state: AppState) => state.tweets;

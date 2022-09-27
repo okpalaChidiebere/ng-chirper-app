@@ -1,6 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { TweetsActions } from '../store/actions/tweets';
+import { AppState } from '../store/reducers';
 
 @Component({
   selector: 'app-new-tweet',
@@ -8,10 +11,12 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./new-tweet.component.css'],
 })
 export class NewTweetComponent implements OnInit, OnDestroy {
+  @Input() id: string | null;
+
   text = new FormControl('');
   tweetLeft: number = 280;
   sub: Subscription;
-  constructor() {}
+  constructor(private readonly store: Store<AppState>) {}
 
   ngOnInit(): void {
     //we will be warning the user when they are running out of space
@@ -26,9 +31,16 @@ export class NewTweetComponent implements OnInit, OnDestroy {
 
   handleSubmit(event) {
     event.preventDefault();
-    console.log(this.text.value);
 
-    //todo: Add tweet to store
+    this.store.dispatch(
+      TweetsActions.handleAddTweet({
+        text: this.text.value,
+        replyingTo: this.id,
+      })
+    );
+
+    this.text.setValue('');
+
     //todo" redirect to home view if submitted
   }
 }

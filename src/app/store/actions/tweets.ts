@@ -1,10 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { createActionGroup, props, Store } from '@ngrx/store';
-import { catchError, forkJoin, from, map, of, switchMap, tap } from 'rxjs';
+import {
+  catchError,
+  exhaustMap,
+  forkJoin,
+  from,
+  map,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 
-import { saveLikeToggle } from 'src/app/utils/api';
+import { saveLikeToggle, saveTweet } from 'src/app/utils/api';
 import { FormatedTweet } from 'src/app/utils/helpers';
+import { LoadingBarActions } from './loadingbar';
 import { Tweet, _getTweets } from '../../utils/_DATA';
 import { AppState } from '../reducers';
 
@@ -16,6 +26,11 @@ export const TweetsActions = createActionGroup({
       Pick<FormatedTweet, 'hasLiked' | 'id'> & { authedUser: string }
     >(),
     'Handle Toggle Tweet': props<Pick<FormatedTweet, 'hasLiked' | 'id'>>(),
+    'Add Tweet': (tweet: Tweet) => ({ tweet }),
+    'Handle Add Tweet': props<{
+      text: string;
+      replyingTo?: string | null;
+    }>(),
   },
 });
 
@@ -33,7 +48,7 @@ export class TweetsEffects {
         tap((action) =>
           this.store.dispatch(TweetsActions.toggleTweet(action.info))
         ),
-        switchMap((action) => {
+        exhaustMap((action) => {
           return forkJoin([
             of(action.info),
             from(saveLikeToggle(action.info)),
@@ -49,6 +64,28 @@ export class TweetsEffects {
         })
       ),
     { dispatch: false }
+  );
+
+  public readonly handleAddTweet$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(TweetsActions.handleAddTweet),
+      concatLatestFrom(() => this.store.select((state) => state.authedUser)),
+      tap(() => this.store.dispatch(LoadingBarActions.showLoading())),
+      switchMap(([action, authedUser]) =>
+        from(
+          saveTweet({
+            text: action.text,
+            author: authedUser,
+            replyingTo: action.replyingTo,
+          })
+        )
+      ),
+      switchMap((tweet) => [
+        TweetsActions.addTweet(tweet),
+        LoadingBarActions.hideLoading(),
+      ]),
+      catchError((error) => of())
+    )
   );
 
   constructor(

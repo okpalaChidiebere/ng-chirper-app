@@ -8,15 +8,23 @@ import { AppComponent } from './app.component';
 import { AppStore } from './store';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TweetComponent } from './tweet/tweet.component';
+import { NewTweetComponent } from './new-tweet/new-tweet.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AppComponent, DashboardComponent, TweetComponent],
+  declarations: [
+    AppComponent,
+    DashboardComponent,
+    TweetComponent,
+    NewTweetComponent,
+  ],
   imports: [
     BrowserModule,
     AppStore,
     MatIconModule,
     BrowserAnimationsModule,
     MatProgressBarModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

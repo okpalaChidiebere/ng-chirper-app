@@ -1,0 +1,25 @@
+<div>
+  <h3 class="center">Compose new Tweet</h3>
+  <form class="new-tweet">
+    <textarea
+      placeholder="What's happening?"
+      [formControl]="text"
+      class="textarea"
+      maxlength="280"
+    >
+    </textarea>
+
+    <div *ngIf="tweetLeft <= 100" class="tweet-length">
+      {{ tweetLeft }}
+    </div>
+
+    <button
+      class="btn"
+      type="submit"
+      [disabled]="text.value === ''"
+      (click)="handleSubmit($event)"
+    >
+      Submit
+    </button>
+  </form>
+</div>

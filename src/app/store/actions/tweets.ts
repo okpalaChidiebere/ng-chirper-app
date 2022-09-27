@@ -4,11 +4,11 @@ import { createActionGroup, props, Store } from '@ngrx/store';
 import {
   catchError,
   exhaustMap,
+  finalize,
   forkJoin,
   from,
   map,
   of,
-  switchMap,
   tap,
 } from 'rxjs';
 
@@ -71,20 +71,25 @@ export class TweetsEffects {
       ofType(TweetsActions.handleAddTweet),
       concatLatestFrom(() => this.store.select((state) => state.authedUser)),
       tap(() => this.store.dispatch(LoadingBarActions.showLoading())),
-      switchMap(([action, authedUser]) =>
+      exhaustMap(([action, authedUser]) =>
         from(
           saveTweet({
             text: action.text,
             author: authedUser,
             replyingTo: action.replyingTo,
           })
+        ).pipe(
+          map((tweet) => TweetsActions.addTweet(tweet)),
+          finalize(() => {
+            this.store.dispatch(LoadingBarActions.hideLoading());
+          })
         )
       ),
-      switchMap((tweet) => [
-        TweetsActions.addTweet(tweet),
-        LoadingBarActions.hideLoading(),
-      ]),
-      catchError((error) => of())
+      catchError((error, source$) => {
+        console.log(error);
+        this.store.dispatch(LoadingBarActions.hideLoading());
+        return source$;
+      })
     )
   );
 

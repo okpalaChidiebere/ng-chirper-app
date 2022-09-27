@@ -15,6 +15,10 @@ import { AppState } from '../store/reducers';
 export class NewTweetComponent implements OnInit, OnDestroy {
   @Input() id: string | null;
 
+  /**
+   * More on formGroup
+   *@see https://stackoverflow.com/questions/70773932/how-to-pass-controls-in-parent-component-sent-from-child-component
+   */
   text = new FormControl('');
   tweetLeft: number = 280;
   sub: Subscription;

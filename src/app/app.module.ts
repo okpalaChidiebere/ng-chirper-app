@@ -13,6 +13,7 @@ import { NewTweetComponent } from './new-tweet/new-tweet.component';
 import { TweetPageComponent } from './tweet-page/tweet-page.component';
 import { AppRoutingModule } from './app-routing.module';
 import { NavComponent } from './nav/nav.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { NavComponent } from './nav/nav.component';
     MatProgressBarModule,
     ReactiveFormsModule,
     AppRoutingModule,
+    HttpClientModule, //imported the module
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -1,15 +1,20 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { ComponentStore } from '@ngrx/component-store';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 
 import { TweetsActions } from '../store/actions/tweets';
 import { AppState } from '../store/reducers';
-import { AuthedUserState } from '../store/reducers/authedUser';
 import { FormatedTweet, formatTweet } from '../utils/helpers';
 
 interface TweetState {
-  authedUser: AuthedUserState;
   tweet: FormatedTweet | null;
 }
 @Component({
@@ -18,8 +23,9 @@ interface TweetState {
   styleUrls: ['./tweet.component.css'],
   providers: [ComponentStore],
 })
-export class TweetComponent implements OnInit {
+export class TweetComponent implements OnChanges, OnDestroy {
   @Input() id: string;
+  subId: Subscription;
   tweet$ = this.componentStore.select((state) => state.tweet);
 
   constructor(
@@ -28,31 +34,39 @@ export class TweetComponent implements OnInit {
     private router: Router
   ) {
     this.componentStore.setState({
-      authedUser: null,
       tweet: null,
     });
   }
 
-  ngOnInit(): void {
-    this.store.subscribe(({ authedUser, tweets, users }: AppState) => {
-      const tweet = tweets[this.id];
-      /**
-       * We handled an edge case where the user might try to access a
-       * tweet with an invalid id
-       */
-      const parentTweet = tweet ? tweets[`${tweet.replyingTo}`] : null; //we know if a tweet is a reply to another tweet
-      this.componentStore.setState({
-        authedUser,
-        tweet: tweet
-          ? formatTweet(
-              tweet,
-              users[`${tweet.author}`],
-              authedUser,
-              parentTweet
-            )
-          : null,
-      });
-    });
+  //whenever the input id changes, we want to re-render the component with the new tweet
+  ngOnChanges(changes: SimpleChanges): void {
+    this.subId = this.store.subscribe(
+      ({ authedUser, tweets, users }: AppState) => {
+        const tweet = tweets.find((item) => item.id === this.id);
+        /**
+         * We handled an edge case where the user might try to access a
+         * tweet with an invalid id
+         */
+        const parentTweet = tweet
+          ? tweets.find((item) => item.id === tweet.replyingTo)
+          : null; //we know if a tweet is a reply to another tweet
+
+        this.componentStore.setState({
+          tweet: tweet
+            ? formatTweet(
+                tweet,
+                users.find((item) => item.id === tweet.author),
+                authedUser,
+                parentTweet
+              )
+            : null,
+        });
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subId.unsubscribe();
   }
 
   toParent(e, tweetId: string) {
@@ -63,7 +77,7 @@ export class TweetComponent implements OnInit {
     this.router.navigate(['/tweet', tweetId]); //declarative way of navigating to a page
   }
 
-  handleLike(e, info: Pick<FormatedTweet, 'hasLiked' | 'id'>) {
+  handleLike(e, info: Pick<FormatedTweet, 'hasLiked' | 'id' | 'author'>) {
     e.stopPropagation();
     e.preventDefault();
 

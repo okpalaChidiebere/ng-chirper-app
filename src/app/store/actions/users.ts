@@ -5,6 +5,6 @@ import { User } from '../../utils/_DATA';
 export const UsersActions = createActionGroup({
   source: 'Users',
   events: {
-    'Receive Users ': (users: Record<string, User>) => ({ users }),
+    'Receive Users ': (users: User[]) => ({ users }),
   },
 });

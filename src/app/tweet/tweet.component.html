@@ -10,7 +10,7 @@
       <div class="tweet-info">
         <div>
           <span>{{ tweet.name }}</span>
-          <div>{{ tweet.timestamp | date: "h:mm a | dd/MM/yyyy" }}</div>
+          <div>{{ tweet.timestamp | date : "h:mm a | dd/MM/yyyy" }}</div>
           <button
             *ngIf="tweet.parent"
             class="replying-to"
@@ -26,7 +26,11 @@
           <button
             class="heart-button"
             (click)="
-              handleLike($event, { id: tweet.id, hasLiked: tweet.hasLiked })
+              handleLike($event, {
+                id: tweet.id,
+                hasLiked: tweet.hasLiked,
+                author: tweet.author
+              })
             "
           >
             <mat-icon

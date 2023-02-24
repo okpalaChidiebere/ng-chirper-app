@@ -1,15 +1,21 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
-import { _getUsers } from '../utils/_DATA';
+import { User } from '../utils/_DATA';
+import { environment } from '../../environments/environment';
+
+const API_HOST = environment.apiHost;
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsersService {
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  getUsers() {
-    return from(_getUsers());
+  getUsers(): Observable<User[]> {
+    return this.http
+      .get<{ items: User[]; nextKey: string }>(`${API_HOST}/v0/users/`)
+      .pipe(map((res) => res.items));
   }
 }

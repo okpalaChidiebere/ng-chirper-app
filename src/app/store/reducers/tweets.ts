@@ -11,45 +11,44 @@ import { AppState } from '.';
 
 export const TWEETS_FEATURE_KEY = 'tweets';
 export const getTweetsState = createFeatureSelector(TWEETS_FEATURE_KEY);
-export type TweetsState = Record<string, Tweet>;
-export const initialState: TweetsState = {};
+export type TweetsState = Tweet[];
+export const initialState: TweetsState = [];
 
 export const tweetsReducer = createReducer(
   initialState,
-  on(TweetsActions.receiveTweets, (state, action) => ({
-    ...state,
-    ...action.tweets,
-  })),
-  on(TweetsActions.toggleTweet, (state, action) => ({
-    ...state, //spread of all of the previous tweets
-    [action.id]: {
-      ...state[action.id],
-      //we remove or add the username based on of the logged in user has liked the tweet or not
-      likes:
-        action.hasLiked === true
-          ? state[action.id].likes.filter((uid) => uid !== action.authedUser)
-          : state[action.id].likes.concat([action.authedUser]),
-    },
-  })),
+  on(TweetsActions.receiveTweets, (state, action) => action.tweets),
+  on(TweetsActions.toggleTweet, (state, action) =>
+    state.map((tweet) =>
+      tweet.id !== action.id
+        ? tweet
+        : Object.assign({}, tweet, {
+            //we remove or add the username based on of the logged in user has liked the tweet or not
+            likes:
+              action.hasLiked === true
+                ? tweet.likes?.filter((uid) => uid !== action.authedUserID)
+                : tweet.likes?.concat([action.authedUserID]) ?? [
+                    action.authedUserID,
+                  ],
+          })
+    )
+  ),
   on(TweetsActions.addTweet, (state, action) => {
-    const { tweet } = action;
+    const { tweet: mTweet } = action;
 
-    let replyingTo = {};
-    //handle case where we are replying to a tweet
-    if (tweet.replyingTo !== null) {
-      replyingTo = {
-        [tweet.replyingTo]: {
-          ...state[tweet.replyingTo],
-          replies: state[tweet.replyingTo].replies.concat([tweet.id]),
-        },
-      };
-    }
-
-    return {
-      ...state,
-      [action.tweet.id]: action.tweet, //add the new tweet to our array of tweets
-      ...replyingTo,
-    };
+    return (
+      state
+        .map((tweet) =>
+          mTweet.replyingTo && tweet.id === mTweet.replyingTo
+            ? //handle case where we are replying to a tweet
+              Object.assign({}, tweet, {
+                //we remove or add the username based on of the logged in user has liked the tweet or not
+                replies: tweet.replies?.concat([mTweet.id]) ?? [mTweet.id],
+              })
+            : tweet
+        )
+        //add the new tweet to our array of tweets
+        .concat([mTweet])
+    );
   })
 );
 
@@ -58,7 +57,7 @@ export const selectTweets = (state: AppState) => state.tweets;
 export const selectTweetIds = createSelector(
   selectTweets,
   (tweets: TweetsState) =>
-    Object.keys(tweets).sort(
-      (a, b) => Number(tweets[b].timestamp) - Number(tweets[a].timestamp)
-    )
+    Array.from(tweets)
+      .sort((a, b) => b.timestamp - a.timestamp) //sort the tweet in descending order (most recent timestamp first)
+      .map((tweet) => tweet.id) //get the array of id properties
 );

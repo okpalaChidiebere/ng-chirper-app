@@ -5,13 +5,10 @@ import { User } from '../../utils/_DATA';
 
 export const USERS_FEATURE_KEY = 'users';
 export const getUsersState = createFeatureSelector(USERS_FEATURE_KEY);
-export type UsersState = Record<string, User>;
-export const initialState: UsersState = {};
+export type UsersState = User[];
+export const initialState: UsersState = [];
 
 export const usersReducer = createReducer(
   initialState,
-  on(UsersActions.receiveUsers, (state, action) => ({
-    ...state,
-    ...action.users,
-  }))
+  on(UsersActions.receiveUsers, (state, action) => action.users)
 );

@@ -1,31 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { createActionGroup, props, Store } from '@ngrx/store';
-import {
-  catchError,
-  exhaustMap,
-  finalize,
-  forkJoin,
-  from,
-  map,
-  of,
-  tap,
-} from 'rxjs';
+import { catchError, exhaustMap, finalize, forkJoin, map, of, tap } from 'rxjs';
 
-import { saveLikeToggle, saveTweet } from 'src/app/utils/api';
 import { FormatedTweet } from 'src/app/utils/helpers';
 import { LoadingBarActions } from './loadingbar';
-import { Tweet, _getTweets } from '../../utils/_DATA';
+import { Tweet } from '../../utils/_DATA';
 import { AppState } from '../reducers';
+import { TweetsService } from 'src/app/services/tweets.service';
 
 export const TweetsActions = createActionGroup({
   source: 'Tweets',
   events: {
-    'Receive Tweets ': (tweets: Record<string, Tweet>) => ({ tweets }),
+    'Receive Tweets ': (tweets: Tweet[]) => ({ tweets }),
     'Toggle Tweet': props<
-      Pick<FormatedTweet, 'hasLiked' | 'id'> & { authedUser: string }
+      Pick<FormatedTweet, 'hasLiked' | 'id'> & { authedUserID: string }
     >(),
-    'Handle Toggle Tweet': props<Pick<FormatedTweet, 'hasLiked' | 'id'>>(),
+    'Handle Toggle Tweet':
+      props<Pick<FormatedTweet, 'hasLiked' | 'id' | 'author'>>(),
     'Add Tweet': (tweet: Tweet) => ({ tweet }),
     'Handle Add Tweet': props<{
       text: string;
@@ -42,8 +34,15 @@ export class TweetsEffects {
         ofType(TweetsActions.handleToggleTweet),
         concatLatestFrom(() => this.store.select((state) => state.authedUser)), //similar to getState() params for a thunk method in Redux
         map((data) => {
-          const [me, authedUser] = data;
-          return { info: { authedUser, hasLiked: me.hasLiked, id: me.id } };
+          const [me, authedUserID] = data;
+          return {
+            info: {
+              authedUserID,
+              hasLiked: me.hasLiked,
+              id: me.id,
+              author: me.author,
+            },
+          };
         }),
         tap((action) =>
           this.store.dispatch(TweetsActions.toggleTweet(action.info))
@@ -51,12 +50,18 @@ export class TweetsEffects {
         exhaustMap((action) => {
           return forkJoin([
             of(action.info),
-            from(saveLikeToggle(action.info)),
+            this.tweetsService.saveLikeToggle(action.info),
           ]).pipe(
             map((data) => of()),
             catchError((error) => {
               console.warn('Error in handleToggleTweet: ', error);
-              this.store.dispatch(TweetsActions.toggleTweet(action.info)); //reset the tweet to back it was initially
+              this.store.dispatch(
+                //reset the tweet to back it was initially
+                TweetsActions.toggleTweet({
+                  ...action.info,
+                  hasLiked: !action.info.hasLiked,
+                })
+              );
               alert('The was an error liking the tweet. Try again.');
               return of();
             })
@@ -69,21 +74,26 @@ export class TweetsEffects {
   public readonly handleAddTweet$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TweetsActions.handleAddTweet),
-      concatLatestFrom(() => this.store.select((state) => state.authedUser)),
+      concatLatestFrom((a) =>
+        this.store.select((state) => [
+          state.authedUser,
+          state.tweets.find((item) => item.id === a.replyingTo).author,
+        ])
+      ),
       tap(() => this.store.dispatch(LoadingBarActions.showLoading())),
-      exhaustMap(([action, authedUser]) =>
-        from(
-          saveTweet({
+      exhaustMap(([action, [authedUser, author]]) =>
+        this.tweetsService
+          .saveTweet({
             text: action.text,
             author: authedUser,
-            replyingTo: action.replyingTo,
+            replyingTo: `${action.replyingTo}:${author}`,
           })
-        ).pipe(
-          map((tweet) => TweetsActions.addTweet(tweet)),
-          finalize(() => {
-            this.store.dispatch(LoadingBarActions.hideLoading());
-          })
-        )
+          .pipe(
+            map((tweet) => TweetsActions.addTweet(tweet)),
+            finalize(() => {
+              this.store.dispatch(LoadingBarActions.hideLoading());
+            })
+          )
       ),
       catchError((error, source$) => {
         console.log(error);
@@ -95,6 +105,7 @@ export class TweetsEffects {
 
   constructor(
     protected readonly actions$: Actions,
-    private readonly store: Store<AppState>
+    private readonly store: Store<AppState>,
+    private readonly tweetsService: TweetsService
   ) {}
 }

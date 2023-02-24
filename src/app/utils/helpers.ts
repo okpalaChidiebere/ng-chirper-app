@@ -3,6 +3,7 @@ import { Tweet, User } from './_DATA';
 export type FormatedTweet = {
   name: string;
   id: string;
+  author: string;
   timestamp: number;
   text: string;
   avatar: string;
@@ -18,22 +19,23 @@ export type FormatedTweet = {
 //takes in an information about a new tweet and formats it in a way that suits our Redux store
 export function formatTweet(
   tweet: Tweet,
-  author: User,
+  tweetUserInfo: User,
   authedUser: string,
   parentTweet: Tweet | null
 ): FormatedTweet {
-  const { id, likes, replies, text, timestamp } = tweet;
-  const { name, avatarURL } = author;
+  const { id, likes, replies, text, timestamp, author } = tweet;
+  const { name, avatarURL } = tweetUserInfo;
 
   return {
     name,
     id,
+    author,
     timestamp,
     text,
     avatar: avatarURL,
-    likes: likes.length,
-    replies: replies.length,
-    hasLiked: likes.includes(authedUser),
+    likes: likes?.length,
+    replies: replies?.length,
+    hasLiked: likes?.includes(authedUser) ?? false,
     parent: !parentTweet
       ? null
       : {

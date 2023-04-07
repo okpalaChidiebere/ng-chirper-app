@@ -26,13 +26,13 @@ before_install:
 # Skip any install step. Don't `go get` dependencies
 install: echo "Skip global installing..."
 
-script:
-  - if [[ $TRAVIS_BRANCH == "master" ]]; then
-    ENVIRONMENT=prod
-    elif [[ $TRAVIS_BRANCH == "staging" ]]; then
-    ENVIRONMENT=staging
+before_script:
+  - if [ $TRAVIS_BRANCH == "master" ]; then
+    ENVIRONMENT=prod;
+    elif [ $TRAVIS_BRANCH == "staging" ]; then
+    ENVIRONMENT=staging;
     else
-    ENVIRONMENT=dev
+    ENVIRONMENT=dev;
     fi
   # lint the nginx conf file
   # we mount a single file to a single file and test that file in nginx. If we had more files in our nginx like SSL, mime types, etc we will mount them as well but we don't

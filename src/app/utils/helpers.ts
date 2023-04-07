@@ -24,15 +24,15 @@ export function formatTweet(
   parentTweet: Tweet | null
 ): FormatedTweet {
   const { id, likes, replies, text, timestamp, author } = tweet;
-  const { name, avatarURL } = tweetUserInfo;
+  const { name, avatarUrl } = tweetUserInfo;
 
   return {
     name,
     id,
     author,
-    timestamp,
+    timestamp: Number(timestamp),
     text,
-    avatar: avatarURL,
+    avatar: avatarUrl,
     likes: likes?.length,
     replies: replies?.length,
     hasLiked: likes?.includes(authedUser) ?? false,

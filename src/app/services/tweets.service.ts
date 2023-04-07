@@ -1,20 +1,22 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 
 import { Tweet } from '../utils/_DATA';
 import { environment } from '../../environments/environment';
 
-const API_HOST = environment.apiHost;
+const API_HOST = `${environment.httpApiHost}/api`;
 
 type SaveLikeToggleRequest = {
   id: string;
   author: string;
-  hasLiked: boolean;
-  authedUserID: string;
+  has_liked: boolean;
+  authed_user_id: string;
 };
 
-type SaveTweetRequest = Pick<Tweet, 'text' | 'replyingTo' | 'author'>;
+type SaveTweetRequest = Pick<Tweet, 'text' | 'author'> & {
+  replying_to: string;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -23,13 +25,22 @@ export class TweetsService {
   constructor(private http: HttpClient) {}
 
   getTweets(): Observable<Tweet[]> {
-    let params = new HttpParams();
-    params = params.append('limit', 30);
+    let limit = 30;
+
+    const params = Object.entries({
+      limit,
+      next_key: '',
+    })
+      .map(([key, value]) => `${key}/${value}`)
+      .join('/');
 
     return this.http
-      .get<{ items: Tweet[]; nextKey: string }>(`${API_HOST}/v0/tweets`, {
-        params,
-      })
+      .get<{ items: Tweet[]; next_key: string }>(
+        `${API_HOST}/v0/tweets/${params}`,
+        {
+          headers: new HttpHeaders().set('Content-Type', 'application/json'),
+        }
+      )
       .pipe(map((res) => res.items));
   }
 
@@ -40,6 +51,8 @@ export class TweetsService {
 
   //save a tweet
   saveTweet(req: SaveTweetRequest): Observable<Tweet> {
-    return this.http.post<Tweet>(`${API_HOST}/v0/tweets`, req);
+    return this.http
+      .post<{ tweet: Tweet }>(`${API_HOST}/v0/tweets`, req)
+      .pipe(map((res) => res.tweet));
   }
 }

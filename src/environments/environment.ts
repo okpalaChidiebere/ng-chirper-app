@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   appName: 'ng-chirper-app',
-  apiHost: 'http://localhost:8080/api',
+  //for these endpoints to work correctly, we assume you have the nginx proxy container running locally
+  httpApiHost: 'https://localhost:8080',
+  http2ApiHost: 'https://localhost:1443',
 };
 
 /*

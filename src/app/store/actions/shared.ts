@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType, OnInitEffects } from '@ngrx/effects';
 import { createAction, Store } from '@ngrx/store';
-import { catchError, finalize, forkJoin, of, switchMap, tap } from 'rxjs';
+import { catchError, finalize, forkJoin, switchMap, tap } from 'rxjs';
 
 import { TweetsService } from '../../services/tweets.service';
 import { UsersService } from '../../services/users.service';
 import { AppState } from '../reducers';
 import { setAuthedUser } from './authedUser';
-import { LoadingBarActions } from './loadingbar';
+import { LoadingBarActions } from './loadingBar';
 import { TweetsActions } from './tweets';
 import { UsersActions } from './users';
 

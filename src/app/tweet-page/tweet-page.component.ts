@@ -32,8 +32,8 @@ export class TweetPageComponent implements OnInit {
               tweets.find((tweet) => tweet.id === id)?.replies ?? []
             ).sort(
               (a, b) =>
-                tweets.find((tweet) => tweet.id === b).timestamp -
-                tweets.find((tweet) => tweet.id === a).timestamp
+                Number(tweets.find((tweet) => tweet.id === b).timestamp) -
+                Number(tweets.find((tweet) => tweet.id === a).timestamp)
             );
       })
     );

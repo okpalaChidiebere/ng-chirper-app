@@ -4,7 +4,7 @@ import { createActionGroup, props, Store } from '@ngrx/store';
 import { catchError, exhaustMap, finalize, forkJoin, map, of, tap } from 'rxjs';
 
 import { FormatedTweet } from 'src/app/utils/helpers';
-import { LoadingBarActions } from './loadingbar';
+import { LoadingBarActions } from './loadingBar';
 import { Tweet } from '../../utils/_DATA';
 import { AppState } from '../reducers';
 import { TweetsService } from 'src/app/services/tweets.service';
@@ -48,9 +48,15 @@ export class TweetsEffects {
           this.store.dispatch(TweetsActions.toggleTweet(action.info))
         ),
         exhaustMap((action) => {
+          const { hasLiked, authedUserID, id, author } = action.info;
           return forkJoin([
             of(action.info),
-            this.tweetsService.saveLikeToggle(action.info),
+            this.tweetsService.saveLikeToggle({
+              id,
+              author,
+              has_liked: hasLiked,
+              authed_user_id: authedUserID,
+            }),
           ]).pipe(
             map((data) => of()),
             catchError((error) => {
@@ -77,17 +83,17 @@ export class TweetsEffects {
       concatLatestFrom((a) =>
         this.store.select((state) => [
           state.authedUser,
-          state.tweets.find((item) => item.id === a.replyingTo).author,
+          a.replyingTo
+            ? `${a.replyingTo}:${
+                state.tweets.find((item) => item.id === a.replyingTo).author
+              }`
+            : '',
         ])
       ),
       tap(() => this.store.dispatch(LoadingBarActions.showLoading())),
-      exhaustMap(([action, [authedUser, author]]) =>
+      exhaustMap(([action, [author, replying_to]]) =>
         this.tweetsService
-          .saveTweet({
-            text: action.text,
-            author: authedUser,
-            replyingTo: `${action.replyingTo}:${author}`,
-          })
+          .saveTweet({ text: action.text, author, replying_to })
           .pipe(
             map((tweet) => TweetsActions.addTweet(tweet)),
             finalize(() => {

@@ -41,3 +41,16 @@ This project is about learning how to ngrx to hold the state of the whole applic
 - [https://stackoverflow.com/questions/44593306/how-to-wait-for-2-actions-in-ngrx-effects](https://stackoverflow.com/questions/44593306/how-to-wait-for-2-actions-in-ngrx-effects)
 - [https://stackoverflow.com/questions/51752485/ngrx-effects-pass-data-through-to-catcherror](https://stackoverflow.com/questions/51752485/ngrx-effects-pass-data-through-to-catcherror)
 - [https://stackoverflow.com/questions/51212126/action-dispatch-the-second-time-doesnt-effect-in-rxjs-and-angular-6](https://stackoverflow.com/questions/51212126/action-dispatch-the-second-time-doesnt-effect-in-rxjs-and-angular-6)
+
+## Docker
+
+- Env variables [here](https://vsupalov.com/docker-build-pass-environment-variables/) and [here](https://stackoverflow.com/questions/31198835/can-we-pass-env-variables-through-cmd-line-while-building-a-docker-image-through)
+- [Understanding Tagging docker images](https://stevelasker.blog/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/)
+
+## Stable Tags Scheme with Docker
+
+To support stable tags for a given major and minor version, they have two sets of stable tags.
+
+- `:prod` – a stable tag for the major version. prod will represent the “newest” or “latest” `prod.*` version.
+- `:prod.262078741` a stable tag for version prod.262078741, allowing a developer to bind to updates of prod.262078741, and not be rolled forward to `prod.262078742`
+- `:latest` which will point to the latest stable tag, no matter what the current major version is.

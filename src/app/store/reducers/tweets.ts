@@ -58,6 +58,6 @@ export const selectTweetIds = createSelector(
   selectTweets,
   (tweets: TweetsState) =>
     Array.from(tweets)
-      .sort((a, b) => b.timestamp - a.timestamp) //sort the tweet in descending order (most recent timestamp first)
+      .sort((a, b) => Number(b.timestamp) - Number(a.timestamp)) //sort the tweet in descending order (most recent timestamp first)
       .map((tweet) => tweet.id) //get the array of id properties
 );

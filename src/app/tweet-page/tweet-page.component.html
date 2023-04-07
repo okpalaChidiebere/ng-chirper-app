@@ -3,7 +3,7 @@
     <app-tweet [id]="id"></app-tweet>
     <!-- Since pass an id to app-new-tweet component, the component will 
       assume we are replying to a tweet. Else, the component will assume 
-      we are crating anew tweet  -->
+      we are creating a new tweet  -->
     <app-new-tweet [id]="id"></app-new-tweet>
   </ng-container>
   <h3 *ngIf="(replies$ | async)?.length != 0" class="center">Replies</h3>

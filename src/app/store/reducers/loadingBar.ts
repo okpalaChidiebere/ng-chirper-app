@@ -1,6 +1,6 @@
 import { createFeatureSelector, createReducer, on } from '@ngrx/store';
 
-import { LoadingBarActions } from '../actions/loadingbar';
+import { LoadingBarActions } from '../actions/loadingBar';
 
 export const LOADING_BAR_FEATURE_KEY = 'loadingBar';
 export const getLoadingBarState = createFeatureSelector(

@@ -20,7 +20,9 @@ env:
     - NGINX_TAG=1.23.4 # documentation: https://hub.docker.com/_/nginx
 
 stages:
-  - test
+  - name: test
+    # run tests only when a commit is pushed remotely on whatever branch
+    if: type = push
   - name: deploy
     # CONDITION: we want to build only want the github event not a PR (is a commit) AND the branchName is master or staging or the branchName end with -ci
     if: type = push AND (branch IN (master, staging) OR branch =~ /-ci/)
@@ -55,8 +57,7 @@ jobs:
       script:
         - docker --version
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker build -t "$DOCKER_USERNAME"/"$SERVICE_NAME":"$ENVIRONMENT"."$TRAVIS_BUILD_ID" --build-arg ENVIRONMENT=$ENVIRONMENT .
-        - docker tag "$DOCKER_USERNAME"/"$SERVICE_NAME" "$DOCKER_USERNAME"/"$SERVICE_NAME":"$ENVIRONMENT"
+        - docker build -t "$DOCKER_USERNAME"/"$SERVICE_NAME":"$ENVIRONMENT" -t "$DOCKER_USERNAME"/"$SERVICE_NAME":"$ENVIRONMENT"."$TRAVIS_BUILD_ID" --build-arg ENVIRONMENT=$ENVIRONMENT .
         - docker images
         - docker push "$DOCKER_USERNAME"/"$SERVICE_NAME":"$ENVIRONMENT"."$TRAVIS_BUILD_ID"
         - docker push "$DOCKER_USERNAME"/"$SERVICE_NAME":"$ENVIRONMENT"

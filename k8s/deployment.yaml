@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ng-chirper-app-deployment
+  labels:
+    app: ng-chirper-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ng-chirper-app
+  template:
+    metadata:
+      labels:
+        app: ng-chirper-app
+    spec:
+      containers:
+        - name: ng-chirper-app
+          image: aluminetchidiebre/ng-chirper-app:dev
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80 # Port 80 is the default for HTTP; this is the port we set to expose in the dockerfile as well
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "1024Mi"
+              cpu: "500m"
+      restartPolicy: Always
+      imagePullSecrets: # use to pull private images. See doc: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+        - name: reg-docker-cred # make sure you have this secrets registered in your k8s cluster

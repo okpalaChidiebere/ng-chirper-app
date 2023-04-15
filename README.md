@@ -47,6 +47,11 @@ This project is about learning how to ngrx to hold the state of the whole applic
 - Env variables [here](https://vsupalov.com/docker-build-pass-environment-variables/) and [here](https://stackoverflow.com/questions/31198835/can-we-pass-env-variables-through-cmd-line-while-building-a-docker-image-through)
 - [Understanding Tagging docker images](https://stevelasker.blog/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/)
 
+## Linting Nginx conf for CI
+
+- [Automate Nginx conf file validation using Docker](https://medium.com/@devkamboj/automate-nginx-conf-file-validation-using-docker-261d7e2ef30c)
+- [Validate your Nginx configuration files easily with Docker](https://dev.to/simdrouin/validate-your-nginx-configuration-files-easily-with-docker-4ihi)
+
 ## Stable Tags Scheme with Docker
 
 To support stable tags for a given major and minor version, they have two sets of stable tags.
@@ -54,3 +59,31 @@ To support stable tags for a given major and minor version, they have two sets o
 - `:prod` – a stable tag for the major version. prod will represent the “newest” or “latest” `prod.*` version.
 - `:prod.262078741` a stable tag for version prod.262078741, allowing a developer to bind to updates of prod.262078741, and not be rolled forward to `prod.262078742`
 - `:latest` which will point to the latest stable tag, no matter what the current major version is.
+
+## Using Git Branch Effectively for features
+
+- `master` branch is where the production code lives and final consumers of our application can interact with. Don't forget to add the [protection rules to your branch](https://spectralops.io/blog/how-to-set-up-git-branch-protection-rules/) like enabling the [**Require status checks before merging**](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/managing-a-branch-protection-rule) and **enabling pull request reviews before merging**. This helps will disable GitHub pull request merge button when CI job fails. Remember to give whatever CI tool you are using access to your github. The CI service you use will ask your your github credentials
+- `staging` branch is where stakeholders can play around and see newly developed features before that are released to the final customers. If the features are approved, then we can make a PR to merge that code to master for public to use
+- In this [StackOverflow thread](https://stackoverflow.com/questions/65889090/git-branches-environments-development-process-for-ci-cd) people talk about branch practices too if u want to read
+  The following script below will be an example of what you will do int terminal to set this up
+
+```bash
+git init
+git add .
+git status
+git commit -m "first commit"
+git remote add origin https://github.com/okpalaChidiebere/chirper-app-api-image-filter.git
+git push -u origin master
+
+git checkout -b staging
+git push --set-upstream origin staging
+
+
+# a developer can brach of staging and small changes to this branch. when they are ready to show the feature to stakeholder and are sure that the feature and codebase is stable in development that we can make a PR to merge to staging
+git checkout -b some-feature-task staging
+
+# we can take it one step further by creating a dev branch. But then the staging branch will be a clone of the master to make sure all of the code we are working on locally will also function while its deployed.
+git checkout -b dev
+git push --set-upstream origin dev
+
+```

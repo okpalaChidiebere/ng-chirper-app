@@ -12,8 +12,9 @@ Before this point I will assume that you already set up your CI pipeline and hav
 
 ## Apply pod deployment and service config to k8s
 
-- We run this command `kubectl apply -f deployment.yaml`. The `deployment.yaml` file is used to specify how our pods should be created. See [doc](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
-- We run this command `kubectl apply -f service.yaml`. The `service.yaml` file is used to specify how our pods are exposed.
+- We run this command `kubectl apply -f microservice.yaml`.
+- The **Deployment** kind is used to specify how our pods should be created. See [doc](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+- The **Service** kind is used to specify how our pods are exposed.
 
 ## Pod deployment STATUS
 
@@ -30,4 +31,5 @@ Before this point I will assume that you already set up your CI pipeline and hav
 - `kubectl get pods` Check the state of Pods
 - `kubectl delete pod <pod_name>` Delete a pod. But Kubernetes will try to generate a new one to maintain the config for number of replicas you set during the deployment of the pod
 - `kubectl logs <pod_name> --all-containers` check the logs for containers in your Pod
+- `kubectl describe pod <pod_name>` Check for meta data for a pod. This is helpful to see info like volumes, readiness, liveness, etc
 - For more commands, take a look at this [doc](https://kubernetes.io/docs/reference/kubectl/cheatsheet/) or [here](https://spacelift.io/blog/kubectl-delete-pod)

@@ -19,7 +19,9 @@ export class UsersService {
         `${API_HOST}/ListUsers`,
         { limit: 0, next_key: '' },
         {
-          headers: new HttpHeaders().set('Content-Type', 'application/json'),
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+          }),
         }
       )
       .pipe(

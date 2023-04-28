@@ -38,7 +38,9 @@ export class TweetsService {
       .get<{ items: Tweet[]; next_key: string }>(
         `${API_HOST}/v0/tweets/${params}`,
         {
-          headers: new HttpHeaders().set('Content-Type', 'application/json'),
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+          }),
         }
       )
       .pipe(map((res) => res.items));
@@ -46,13 +48,21 @@ export class TweetsService {
 
   //toggle the like button of a tweet
   saveLikeToggle(req: SaveLikeToggleRequest): Observable<{}> {
-    return this.http.patch<{}>(`${API_HOST}/v0/tweets`, req);
+    return this.http.patch<{}>(`${API_HOST}/v0/tweets`, req, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    });
   }
 
   //save a tweet
   saveTweet(req: SaveTweetRequest): Observable<Tweet> {
     return this.http
-      .post<{ tweet: Tweet }>(`${API_HOST}/v0/tweets`, req)
+      .post<{ tweet: Tweet }>(`${API_HOST}/v0/tweets`, req, {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+        }),
+      })
       .pipe(map((res) => res.tweet));
   }
 }

@@ -1,6 +1,4 @@
 dist
 node_modules
 .git
-.yaml
-.yaml
-.yml
+k8s

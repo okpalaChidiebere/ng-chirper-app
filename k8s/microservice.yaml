@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: ng-chirper-app
-          image: aluminetchidiebre/ng-chirper-app:dev
+          image: aluminetchidiebre/ng-chirper-app:prod
           imagePullPolicy: Always
           ports:
             - containerPort: 80 # Port 80 is the default for HTTP; this is the port we set to expose in the dockerfile as well
@@ -30,3 +30,19 @@ spec:
       restartPolicy: Always
       imagePullSecrets: # use to pull private images. See doc: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
         - name: reg-docker-cred # make sure you have this secrets registered in your k8s cluster
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: udagram-frontend
+  labels:
+    app: ng-chirper-app
+spec:
+  ports:
+    # listen on local port 80 and forward to port 80 on a Pod created by <ng-chirper-app-deployment>
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    app: ng-chirper-app
+  type: ClusterIP # we will set up an Ingress that loads this service. With Ingress we can easily configure tls and automatic cert renewal with cert-manager

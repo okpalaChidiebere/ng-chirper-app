@@ -19,6 +19,7 @@ env:
     - SERVICE_NAME="ng-chirper-app"
     - NGINX_TAG=1.23.4 # documentation: https://hub.docker.com/_/nginx
 
+# these jobs will be queued up by id. eg 12.1, 12.2 etc
 stages:
   - name: test
     # run tests only when a commit is pushed remotely on whatever branch
@@ -64,5 +65,7 @@ jobs:
 
 notifications:
   email:
+    recipients:
+      - okpalacollins4@gmail.com
     on_success: never
     on_failure: always

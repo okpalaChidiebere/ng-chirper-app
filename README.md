@@ -41,6 +41,9 @@ This project is about learning how to ngrx to hold the state of the whole applic
 - [https://stackoverflow.com/questions/44593306/how-to-wait-for-2-actions-in-ngrx-effects](https://stackoverflow.com/questions/44593306/how-to-wait-for-2-actions-in-ngrx-effects)
 - [https://stackoverflow.com/questions/51752485/ngrx-effects-pass-data-through-to-catcherror](https://stackoverflow.com/questions/51752485/ngrx-effects-pass-data-through-to-catcherror)
 - [https://stackoverflow.com/questions/51212126/action-dispatch-the-second-time-doesnt-effect-in-rxjs-and-angular-6](https://stackoverflow.com/questions/51212126/action-dispatch-the-second-time-doesnt-effect-in-rxjs-and-angular-6)
+- [Best Practice to initiate Effect and action](https://stackoverflow.com/questions/58892578/best-practice-to-initiate-effect-and-action)
+- [Angular: Prevent loss of data in forkJoin operator when few of the multiple inner observables fail](https://medium.com/geekculture/angular-prevent-loss-of-data-in-forkjoin-operator-when-few-of-the-multiple-inner-observables-fail-c38225a1adf1)
+- [What is a forkJoin alternative that allows parallel requests to complete if one of them fails](https://stackoverflow.com/questions/71162366/what-is-a-forkjoin-alternative-that-allows-parallel-requests-to-complete-if-one)
 
 ## Docker
 
@@ -59,6 +62,9 @@ To support stable tags for a given major and minor version, they have two sets o
 - `:prod` – a stable tag for the major version. prod will represent the “newest” or “latest” `prod.*` version.
 - `:prod.262078741` a stable tag for version prod.262078741, allowing a developer to bind to updates of prod.262078741, and not be rolled forward to `prod.262078742`
 - `:latest` which will point to the latest stable tag, no matter what the current major version is.
+- [Recommendations for tagging and versioning container images](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-image-tag-version)
+- [What Tagging Scheme Should I Use?](https://stevelasker.blog/2018/03/01/docker-tagging-best-practices-for-tagging-and-versioning-docker-images/)
+- [How to use Docker tags to add version control to images](https://www.techrepublic.com/article/how-to-use-docker-tags-to-add-version-control-to-images/)
 
 ## Using Git Branch Effectively for features
 
@@ -87,3 +93,5 @@ git checkout -b dev
 git push --set-upstream origin dev
 
 ```
+
+## Tagging Docker Images Practices for CI/CD
